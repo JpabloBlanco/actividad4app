@@ -112,7 +112,7 @@ const Index = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tabla de Estudiantes</Text>
+      <Text style={styles.title}>Tabla de Usuario</Text>
 
       <Button
         title="Agregar Estudiante"
@@ -132,7 +132,7 @@ const Index = () => {
 
       {/* Cuerpo de la tabla */}
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#FF6F61" />
       ) : (
         <FlatList
           data={students}
@@ -147,31 +147,33 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: "#fff",
+    padding: 20,
+    backgroundColor: "#FFF5F0", // Fondo cálido suave
   },
   title: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#FF6F61", // Color principal cálido
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: "#FF6F61", // Borde cálido
   },
   header: {
-    backgroundColor: "#f1f1f1",
+    backgroundColor: "#FFDAB9", // Fondo cálido para la cabecera
     borderBottomWidth: 2,
-    borderBottomColor: "#000",
+    borderBottomColor: "#FF6F61",
   },
   cell: {
     flex: 1,
     textAlign: "center",
-    fontSize: 14,
+    fontSize: 16,
+    color: "#555", // Color de texto suave
   },
   actions: {
     flexDirection: "row",
@@ -179,19 +181,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   editButton: {
-    backgroundColor: "blue",
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: "#FF6F61", // Botón cálido
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
   deleteButton: {
-    backgroundColor: "red",
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: "#FF8C00", // Color de eliminación cálido
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
   buttonText: {
-    color: "#fff",
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 14,
     textAlign: "center",
-    fontSize: 12,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "./types";
@@ -43,6 +43,11 @@ const Formulario = () => {
 
   // Función para agregar o actualizar el estudiante
   const handleSubmit = async () => {
+    if (!cedula || !nombre || !apellido || !email || !edad) {
+      Alert.alert("Error", "Todos los campos son obligatorios.");
+      return;
+    }
+
     if (student) {
       // Si estamos editando
       try {
@@ -56,6 +61,7 @@ const Formulario = () => {
         navigation.navigate("index"); // Redirigir al index después de actualizar
       } catch (error) {
         console.error("Error al actualizar el estudiante", error);
+        Alert.alert("Error", "No se pudo actualizar el estudiante.");
       }
     } else {
       // Si estamos agregando
@@ -71,13 +77,14 @@ const Formulario = () => {
         navigation.navigate("index"); // Redirigir al index después de agregar
       } catch (error) {
         console.error("Error al agregar el estudiante", error);
+        Alert.alert("Error", "No se pudo agregar el estudiante.");
       }
     }
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
         {student ? "Editar Estudiante" : "Agregar Estudiante"}
       </Text>
 
@@ -135,21 +142,37 @@ const Formulario = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF5F0", // Fondo cálido suave
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#FF6F61", // Título con color cálido
+  },
   input: {
-    marginBottom: 10,
-    padding: 8,
+    marginBottom: 12,
+    padding: 12,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#FF6F61", // Borde cálido
+    borderRadius: 8,
+    fontSize: 16,
   },
   picker: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#FF6F61", // Borde cálido
+    borderRadius: 8,
+    fontSize: 16,
   },
   buttonContainer: {
+    marginTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
   },
 });
 
