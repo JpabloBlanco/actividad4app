@@ -1,28 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import axios from 'axios';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from './types';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import axios from "axios";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "./types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Aquí importamos Picker desde el nuevo paquete
-import { Picker } from '@react-native-picker/picker';
-import { RouteProp } from '@react-navigation/native';
+import { Picker } from "@react-native-picker/picker";
+import { RouteProp } from "@react-navigation/native";
 
-type FormularioScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Formulario'>;
+type FormularioScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Formulario"
+>;
 
-type FormularioScreenRouteProp = RouteProp<RootStackParamList, 'Formulario'>;
+type FormularioScreenRouteProp = RouteProp<RootStackParamList, "Formulario">;
 
 const Formulario = () => {
-  const [cedula, setCedula] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [email, setEmail] = useState('');
-  const [edad, setEdad] = useState('');
-  const [estado, setEstado] = useState('1'); // Valor inicial como '1' (Activo)
+  const [cedula, setCedula] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [email, setEmail] = useState("");
+  const [edad, setEdad] = useState("");
+  const [estado, setEstado] = useState("1"); // Valor inicial como '1' (Activo)
 
   // Se obtiene la ruta y la navegación
-  const route = useRoute<FormularioScreenRouteProp>();  // Aseguramos el tipo aquí
+  const route = useRoute<FormularioScreenRouteProp>(); // Aseguramos el tipo aquí
   const navigation = useNavigation<FormularioScreenNavigationProp>();
 
   const student = route.params?.student; // 'student' es opcional
@@ -34,7 +37,7 @@ const Formulario = () => {
       setApellido(student.apellido);
       setEmail(student.email);
       setEdad(student.edad.toString());
-      setEstado(student.estado === 1 ? '1' : '0'); // Mostrar 1 o 0 según el estado
+      setEstado(student.estado === 1 ? "1" : "0"); // Mostrar 1 o 0 según el estado
     }
   }, [student]);
 
@@ -43,21 +46,21 @@ const Formulario = () => {
     if (student) {
       // Si estamos editando
       try {
-        await axios.put(`http://localhost:5000/api/estudiante/${cedula}`, {
+        await axios.put(`http://192.168.1.32:5000/api/estudiante/${cedula}`, {
           nombre,
           apellido,
           email,
           edad,
           estado: Number(estado), // Convertir a número al enviar
         });
-        navigation.navigate('Index'); // Redirigir al index después de actualizar
+        navigation.navigate("index"); // Redirigir al index después de actualizar
       } catch (error) {
         console.error("Error al actualizar el estudiante", error);
       }
     } else {
       // Si estamos agregando
       try {
-        await axios.post('http://localhost:5000/api/estudiante', {
+        await axios.post("http://192.168.1.32:5000/api/estudiante", {
           cedula,
           nombre,
           apellido,
@@ -65,7 +68,7 @@ const Formulario = () => {
           edad,
           estado: Number(estado), // Convertir a número al enviar
         });
-        navigation.navigate('Index'); // Redirigir al index después de agregar
+        navigation.navigate("index"); // Redirigir al index después de agregar
       } catch (error) {
         console.error("Error al agregar el estudiante", error);
       }
@@ -73,16 +76,16 @@ const Formulario = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white', padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
       <Text style={{ fontSize: 24, marginBottom: 20 }}>
-        {student ? 'Editar Estudiante' : 'Agregar Estudiante'}
+        {student ? "Editar Estudiante" : "Agregar Estudiante"}
       </Text>
 
       <TextInput
         placeholder="Cédula"
         value={cedula}
         onChangeText={setCedula}
-        editable={!student}  // No editable si estamos editando
+        editable={!student} // No editable si estamos editando
         style={styles.input}
       />
       <TextInput
@@ -121,7 +124,10 @@ const Formulario = () => {
       </Picker>
 
       <View style={styles.buttonContainer}>
-        <Button title={student ? 'Actualizar Estudiante' : 'Agregar Estudiante'} onPress={handleSubmit} />
+        <Button
+          title={student ? "Actualizar Estudiante" : "Agregar Estudiante"}
+          onPress={handleSubmit}
+        />
         <Button title="Regresar" onPress={() => navigation.goBack()} />
       </View>
     </View>
@@ -133,16 +139,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   picker: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
   },
 });

@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Button, ActivityIndicator } from 'react-native';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './types';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Button,
+  ActivityIndicator,
+} from "react-native";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "./types";
 
 // Tipo de navegación
-type IndexScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Index'>;
+type IndexScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "index"
+>;
 
 const Index = () => {
   const [students, setStudents] = useState<any[]>([]); // Estado para los estudiantes
@@ -17,11 +29,13 @@ const Index = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/estudiante'); // Cambia localhost por tu IP si usas móvil
+      const response = await axios.get(
+        "http://192.168.1.32:5000/api/estudiante"
+      ); // Cambia localhost por tu IP si usas móvil
       const studentsArray = Object.values(response.data); // Convierte el objeto en un array
       setStudents(studentsArray);
     } catch (error) {
-      console.error('Error al obtener los estudiantes:', error);
+      console.error("Error al obtener los estudiantes:", error);
     } finally {
       setLoading(false);
     }
@@ -33,31 +47,39 @@ const Index = () => {
 
   // Navegar a formulario para agregar/editar estudiante
   const handleNavigateToFormulario = (student?: any) => {
-    navigation.navigate('Formulario', {
+    navigation.navigate("Formulario", {
       student,
       onSave: fetchStudents, // Refrescar lista tras guardar
     });
   };
 
-  // Eliminar estudiante
   const deleteStudent = async (cedula: string) => {
+    // Función para eliminar el estudiante después de la confirmación
+    const handleDelete = async () => {
+      try {
+        // Realizar la solicitud DELETE para eliminar el estudiante
+        await axios.delete(`http://192.168.1.32:5000/api/estudiante/${cedula}`);
+
+        // Actualizar la lista de estudiantes eliminando al que tiene la cedula eliminada
+        setStudents((prevStudents) =>
+          prevStudents.filter((student) => student.cedula !== cedula)
+        );
+
+        // Mostrar mensaje de éxito
+        Alert.alert("Éxito", "El estudiante ha sido eliminado correctamente");
+      } catch (error) {
+        console.error("Error al eliminar el estudiante:", error);
+        Alert.alert("Error", "No se pudo eliminar el estudiante.");
+      }
+    };
+
+    // Mostrar alerta de confirmación
     Alert.alert(
       "Confirmación",
       "¿Estás seguro de que deseas eliminar este estudiante?",
       [
         { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          onPress: async () => {
-            try {
-              await axios.delete(`http://localhost:5000/api/estudiante/${cedula}`);
-              setStudents(students.filter(student => student.cedula !== cedula));
-            } catch (error) {
-              console.error('Error al eliminar el estudiante:', error);
-              Alert.alert('Error', 'No se pudo eliminar el estudiante.');
-            }
-          },
-        },
+        { text: "Eliminar", onPress: handleDelete }, // Llamar a handleDelete si se confirma
       ]
     );
   };
@@ -70,12 +92,18 @@ const Index = () => {
       <Text style={styles.cell}>{item.apellido}</Text>
       <Text style={styles.cell}>{item.email}</Text>
       <Text style={styles.cell}>{item.edad}</Text>
-      <Text style={styles.cell}>{item.estado ? 'Activo' : 'Inactivo'}</Text>
+      <Text style={styles.cell}>{item.estado ? "Activo" : "Inactivo"}</Text>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={() => handleNavigateToFormulario(item)} style={styles.editButton}>
+        <TouchableOpacity
+          onPress={() => handleNavigateToFormulario(item)}
+          style={styles.editButton}
+        >
           <Text style={styles.buttonText}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => deleteStudent(item.cedula)} style={styles.deleteButton}>
+        <TouchableOpacity
+          onPress={() => deleteStudent(item.cedula)}
+          style={styles.deleteButton}
+        >
           <Text style={styles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
@@ -86,7 +114,10 @@ const Index = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Tabla de Estudiantes</Text>
 
-      <Button title="Agregar Estudiante" onPress={() => handleNavigateToFormulario()} />
+      <Button
+        title="Agregar Estudiante"
+        onPress={() => handleNavigateToFormulario()}
+      />
 
       {/* Cabecera de la tabla */}
       <View style={[styles.row, styles.header]}>
@@ -117,49 +148,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   header: {
-    backgroundColor: '#f1f1f1',
+    backgroundColor: "#f1f1f1",
     borderBottomWidth: 2,
-    borderBottomColor: '#000',
+    borderBottomColor: "#000",
   },
   cell: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
   },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     flex: 1,
   },
   editButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 5,
     borderRadius: 5,
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: "red",
     padding: 5,
     borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
-    textAlign: 'center',
+    color: "#fff",
+    textAlign: "center",
     fontSize: 12,
   },
 });
